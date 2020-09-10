@@ -1,6 +1,29 @@
 <template>
   <div class="container">
-    <h1>Hello, I'm a first Vue/Nuxt app!</h1>
+    <div>
+      <Logo />
+      <h1 class="title">
+        MyNuxtPractice
+      </h1>
+      <div class="links">
+        <a
+          href="https://nuxtjs.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="button--green"
+        >
+          Documentation
+        </a>
+        <a
+          href="https://github.com/nuxt/nuxt.js"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="button--grey"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
   </div>
 </template>
 

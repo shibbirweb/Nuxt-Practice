@@ -1,6 +1,6 @@
 <template>
     <div class="posts-page">
-
+      <PostList/>
     </div>
 </template>
 
@@ -10,4 +10,5 @@
     justify-content: center;
     align-items: center;
   }
+
 </style>

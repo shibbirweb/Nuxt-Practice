@@ -29,5 +29,14 @@
     align-items: center;
     width: 80%;
   }
+  .nav-item a {
+    text-decoration: none;
+    color: black;
+  }
+
+  .nav-item a:hover,
+  .nav-item a:active {
+    color: white;
+  }
 </style>
 

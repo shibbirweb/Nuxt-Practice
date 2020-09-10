@@ -21,3 +21,7 @@
     layout: 'users'
   }
 </script>
+
+<style scoped>
+
+</style>

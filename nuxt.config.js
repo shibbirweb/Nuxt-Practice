@@ -74,5 +74,8 @@ export default {
   transition: {
     name: 'fade',
     mode: 'out-in'
-  }
+  },
+  /*router: {
+    middleware: 'log'
+  }*/
 }

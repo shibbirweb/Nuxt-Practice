@@ -8,6 +8,7 @@
 
 <script>
   export default {
+    //middleware: 'log',
     data(){
       return {
         displaySideNav: false

@@ -12,7 +12,7 @@
   export default {
     asyncData(context, callback){
 
-      console.log("asyncdata executed")
+      console.log(context)
 
       setTimeout(() => {
         callback(null,  {

@@ -14,10 +14,10 @@
 
       console.log(context)
 
-      return new Promise()
+      /*return new Promise()
       .catch(e => {
         context.error(new Error())
-      })
+      })*/
 
       setTimeout(() => {
         callback(null,  {

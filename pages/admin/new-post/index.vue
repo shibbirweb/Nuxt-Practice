@@ -12,9 +12,10 @@
     layout: 'admin',
     methods: {
       onSubmitted(postData){
-        axios.post('https://nuxt-practice-b8878.firebaseio.com/posts.json', {...postData, updatedDate: new Date()})
-        .then(result => console.log(result))
-        .catch(reason => console.log(reason))
+        this.$store.dispatch('addPost', postData)
+        .then(() => {
+          this.$router.push('/admin')
+        })
       }
     }
 

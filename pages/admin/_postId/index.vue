@@ -11,7 +11,7 @@
     export default {
       layout: 'admin',
       asyncData(context){
-        return axios.get('https://nuxt-practice-b8878.firebaseio.com/posts/' +  context.params.postId + '.json')
+        return axios.get( process.env.baseUrl + '/posts/' +  context.params.postId + '.json')
         .then(res => {
           return {
             loadedPost: {...res.data, id: context.params.postId}

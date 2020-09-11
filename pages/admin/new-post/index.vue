@@ -1,15 +1,22 @@
 <template>
   <div class="admin-new-post-page">
     <section class="new-post-form">
-      <AdminPostForm/>
+      <AdminPostForm @submit="onSubmitted"/>
     </section>
   </div>
 </template>
 
 <script>
+  import axios from 'axios'
   export default {
     layout: 'admin',
-
+    methods: {
+      onSubmitted(postData){
+        axios.post('https://nuxt-practice-b8878.firebaseio.com/posts.json', postData)
+        .then(result => console.log(result))
+        .catch(reason => console.log(reason))
+      }
+    }
 
   }
 </script>

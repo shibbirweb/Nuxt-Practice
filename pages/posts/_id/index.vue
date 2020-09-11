@@ -22,22 +22,17 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
-    asyncData(context, callback){
-      console.log("async data for single post")
-      setTimeout(() => {
-        callback(null, {
-          loadedPost: {
-            id: '1',
-            author: 'Shibbir',
-            title: 'My awesome title (ID: '+ context.params.id + ')',
-            previewText: 'Super amazing, thanks for that!',
-            updatedDate: new Date,
-            content: 'Some dummy text which is definitely not the preview text though!',
-            thumbnail: 'https://images.idgesg.net/images/article/2019/05/cso_best_security_software_best_ideas_best_technology_lightbulb_on_horizon_of_circuit_board_landscape_with_abstract_digital_connective_technology_atmosphere_ideas_innovation_creativity_by_peshkov_gettyimages-965785212_3x2_2400x1600-100797318-large.jpg'
-          },
+    asyncData(context){
+      return axios.get('https://nuxt-practice-b8878.firebaseio.com/posts/' + context.params.id + '.json')
+        .then(res => {
+          return {
+            loadedPost: res.data
+          }
         })
-      }, 1000)
+      .catch(e => context.error(e))
     }
   }
 </script>

@@ -9,6 +9,7 @@
 <script>
     export default {
       layout: 'admin',
+      middleware: 'auth',
       asyncData(context){
         return context.app.$axios.$get( '/posts/' +  context.params.postId + '.json')
         .then(data => {

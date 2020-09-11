@@ -14,6 +14,11 @@
 
       console.log(context)
 
+      return new Promise()
+      .catch(e => {
+        context.error(new Error())
+      })
+
       setTimeout(() => {
         callback(null,  {
           loadedPosts:  [

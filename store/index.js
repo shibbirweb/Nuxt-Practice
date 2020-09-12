@@ -1,4 +1,5 @@
 import Vuex from 'vuex'
+import Cookie from 'js-cookie'
 
 const createStore = () => {
   return new Vuex.Store({
@@ -10,17 +11,17 @@ const createStore = () => {
       setPosts(state, posts) {
         state.loadedPosts = posts
       },
-      addPost(state, post){
+      addPost(state, post) {
         state.loadedPosts.push(post)
       },
-      editPost(state, editedPost){
+      editPost(state, editedPost) {
         const postIndex = state.loadedPosts.findIndex(post => post.id === editedPost.id)
         state.loadedPosts[postIndex] = editedPost;
       },
-      setToken(state, token){
+      setToken(state, token) {
         state.token = token
       },
-      clearToken(state){
+      clearToken(state) {
         state.token = null
       }
     },
@@ -30,14 +31,13 @@ const createStore = () => {
           .$get('/posts.json')
           .then(data => {
             const postsArray = [];
-            for (const key in data){
+            for (const key in data) {
               postsArray.push({...data[key], id: key})
             }
             vuexContext.commit('setPosts', postsArray)
-          }).
-        catch(e => context.error(e));
+          }).catch(e => context.error(e));
       },
-      addPost(vuexContext, post){
+      addPost(vuexContext, post) {
         const createdPost = {...post, updatedDate: new Date()}
         return this.$axios.$post('/posts.json?auth=' + vuexContext.state.token, createdPost)
           .then(data => {
@@ -45,7 +45,7 @@ const createStore = () => {
           })
           .catch(reason => console.log(reason))
       },
-      editPost(vuexContext, editedPost){
+      editPost(vuexContext, editedPost) {
         const updatedPost = {...editedPost};
         return this.$axios.$put('/posts/' + editedPost.id + '.json?auth=' + vuexContext.state.token, editedPost)
           .then(res => {
@@ -56,10 +56,10 @@ const createStore = () => {
       setPosts(vuexContext, posts) {
         vuexContext.commit('setPosts', posts)
       },
-      authenticateUser(vuexContext, authData){
+      authenticateUser(vuexContext, authData) {
         let authUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + process.env.fbAPIKey
-        if (!authData.isLogin){
-          authUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+ process.env.fbAPIKey
+        if (!authData.isLogin) {
+          authUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + process.env.fbAPIKey
         }
 
         return this.$axios.$post(authUrl, {
@@ -71,21 +71,42 @@ const createStore = () => {
             vuexContext.commit('setToken', result.idToken)
             localStorage.setItem('token', result.idToken)
             localStorage.setItem('tokenExpiration', new Date().getTime() + result.expiresIn * 1000)
+            Cookie.set('jwt', result.idToken)
+            Cookie.set('expirationDate', new Date().getTime() + result.expiresIn * 1000)
             vuexContext.dispatch('letLogoutTimer', result.expiresIn * 1000)
           })
           .catch(e => console.log(e))
       },
-      letLogoutTimer(vuexContext, duration){
+      letLogoutTimer(vuexContext, duration) {
         setTimeout(() => {
           vuexContext.commit('clearToken')
         }, duration)
       },
-      initAuth(vuexContext){
-        const token = localStorage.getItem('token')
-        const expirationDate = localStorage.getItem('tokenExpiration')
+      initAuth(vuexContext, req) {
 
-        if (new Date().getTime() > +expirationDate || !token){
-          return;
+        let token, expirationDate;
+
+        if (req) {
+          if (!req.headers.cookie) {
+            return;
+          }
+          const jwtCookie = req.headers.cookie.split(';').find(c => c.trim().startsWith('jwt='))
+          expirationDate = req.headers.cookie.split(';').find(c => c.trim().startsWith('expirationDate='))
+            .split('=')[1]
+
+          if (!jwtCookie){
+            return;
+          }
+
+          token = jwtCookie.split('=')[1]
+        } else {
+          token = localStorage.getItem('token')
+          expirationDate = localStorage.getItem('tokenExpiration')
+
+          if (new Date().getTime() > +expirationDate || !token) {
+            return;
+          }
+
         }
         vuexContext.dispatch('letLogoutTimer', +expirationDate - new Date().getTime())
         vuexContext.commit('setToken', token)
@@ -95,7 +116,7 @@ const createStore = () => {
       loadedPosts(state) {
         return state.loadedPosts
       },
-      isAuthenticated(state){
+      isAuthenticated(state) {
         return state.token != null
       }
     }
